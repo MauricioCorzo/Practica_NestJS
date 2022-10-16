@@ -13,7 +13,7 @@ async function bootstrap() {
         .addTag('User')
         .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('api', app, document); // Documentacion de las rutas en /api
     app.useGlobalPipes(new ValidationPipe()); // Para que valide los datos que nos envian cons npm i --save class-validator class-transform
 
     const PORT = 3000;
