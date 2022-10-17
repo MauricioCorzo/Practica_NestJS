@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, Length } from 'class-validator';
 import { User } from './Model';
@@ -29,7 +29,19 @@ export class UserController {
     }
 
     @Get()
-    getUsers(): string {
-        return this.userService.getUsers();
+    allUsers(): Promise<CreateUser[]> {
+        return this.userService.allUsers();
+    }
+
+    @Get('confirmar/:token')
+    confirmar(@Param('token') token: string) {
+        return this.userService.confirmar(token);
+    }
+
+    @Post('login')
+    getpassword(
+        @Body() usuario: Pick<CreateUser, 'email' | 'password'>
+    ): Promise<boolean> {
+        return this.userService.getPassword(usuario);
     }
 }
