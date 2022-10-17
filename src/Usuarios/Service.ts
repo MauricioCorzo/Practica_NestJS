@@ -1,12 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { generarId } from 'src/helpers/generarId';
-import { CreateUser } from './Controller';
+import { CreateUser, LoginUser } from './Controller';
 import { User } from './Model';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User) private readonly userModel: typeof User) {}
+    constructor(@InjectModel(User) private userModel: typeof User, private jwtService: JwtService) {}
 
     async registar(createUser: CreateUser): Promise<User> {
         const { nombre, email, password } = createUser;
@@ -56,15 +57,30 @@ export class UserService {
         }
     }
 
-    async getPassword(
-        usuario: Pick<CreateUser, 'email' | 'password'>
-    ): Promise<boolean> {
+    async login(usuario: Pick<CreateUser, 'email' | 'password'>): Promise<LoginUser> {
         const { email, password } = usuario;
 
-        const usuarioOtro = await this.userModel.findOne({
-            where: { email: email },
-        });
+        const usuarioLogin = await this.userModel.findOne({ where: { email: email } });
 
-        return usuarioOtro.verificarPassword(password);
+        if (!usuarioLogin) {
+            throw new HttpException('Usuario no encontrado', 404);
+        }
+
+        if (!usuarioLogin.verificarPassword(password)) {
+            throw new HttpException('Contraseña incorrecta', 403);
+        }
+
+        if (!usuarioLogin.confirmado) {
+            throw new HttpException('Tu cuenta no ha sido confirmada aun', 403);
+        }
+
+        const token = this.jwtService.sign({ id: usuarioLogin.id, nombre: usuarioLogin.nombre, email: usuarioLogin.email });
+
+        const user: LoginUser = {
+            user: usuarioLogin,
+            token: token,
+        };
+
+        return user;
     }
 }

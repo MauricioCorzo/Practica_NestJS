@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, Length } from 'class-validator';
+import { JwtGuard } from './Jwt-guardian';
 import { User } from './Model';
 import { UserService } from './Service';
 
@@ -9,13 +10,22 @@ export class CreateUser {
 
     @IsNotEmpty()
     nombre: string;
+
     @IsNotEmpty()
     email: string;
+
     @IsNotEmpty()
     @Length(8)
     password: string;
+
     token?: string;
+
     confirmado?: boolean;
+}
+
+export interface LoginUser {
+    user: CreateUser;
+    token: string;
 }
 
 @ApiTags('User')
@@ -39,9 +49,13 @@ export class UserController {
     }
 
     @Post('login')
-    getpassword(
-        @Body() usuario: Pick<CreateUser, 'email' | 'password'>
-    ): Promise<boolean> {
-        return this.userService.getPassword(usuario);
+    login(@Body() usuario: Pick<CreateUser, 'email' | 'password'>): Promise<LoginUser> {
+        return this.userService.login(usuario);
+    }
+
+    @UseGuards(JwtGuard)
+    @Get('perfil')
+    perfil(@Request() req): CreateUser {
+        return req.user;
     }
 }
