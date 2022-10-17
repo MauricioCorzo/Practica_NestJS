@@ -24,7 +24,6 @@ export class CreateUser {
 }
 
 export interface LoginUser {
-    user: CreateUser;
     token: string;
 }
 
@@ -41,6 +40,11 @@ export class UserController {
     @Get()
     allUsers(): Promise<CreateUser[]> {
         return this.userService.allUsers();
+    }
+
+    @Get(':id')
+    getUser(@Param('id') id: string): Promise<CreateUser> {
+        return this.userService.getUser(id);
     }
 
     @Get('confirmar/:token')

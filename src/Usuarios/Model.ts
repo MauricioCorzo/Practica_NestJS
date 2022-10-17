@@ -1,16 +1,13 @@
-import {
-    Column,
-    Model,
-    Table,
-    DataType,
-    AllowNull,
-    PrimaryKey,
-    Default,
-    IsUUID,
-    BeforeCreate,
-} from 'sequelize-typescript';
+import { Column, Model, Table, DataType, AllowNull, PrimaryKey, Default, IsUUID, BeforeCreate, Scopes } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
 
+@Scopes(() => ({
+    eliminarPassword: {
+        attributes: {
+            exclude: ['password'],
+        },
+    },
+}))
 @Table({ modelName: 'User', tableName: 'User', timestamps: false })
 export class User extends Model {
     @IsUUID(4)

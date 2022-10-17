@@ -35,7 +35,17 @@ export class UserService {
     }
 
     async allUsers(): Promise<CreateUser[]> {
-        return await this.userModel.findAll();
+        return await this.userModel.scope('eliminarPassword').findAll();
+    }
+
+    async getUser(id: string): Promise<CreateUser> {
+        const usuario = await this.userModel.findByPk(id);
+
+        if (!usuario) {
+            throw new HttpException('Id inexistente o Incorrecto', 400);
+        }
+
+        return usuario;
     }
 
     async confirmar(token: string) {
@@ -77,7 +87,7 @@ export class UserService {
         const token = this.jwtService.sign({ id: usuarioLogin.id, nombre: usuarioLogin.nombre, email: usuarioLogin.email });
 
         const user: LoginUser = {
-            user: usuarioLogin,
+            // user: usuarioLogin,
             token: token,
         };
 
