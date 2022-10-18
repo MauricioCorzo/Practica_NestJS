@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { generarId } from 'src/helpers/generarId';
-import { CreateUser, LoginUser } from './Controller';
+import { CreateUser, LoginUser, Token } from './Controller';
 import { User } from './Model';
 
 @Injectable()
@@ -67,7 +67,7 @@ export class UserService {
         }
     }
 
-    async login(usuario: Pick<CreateUser, 'email' | 'password'>): Promise<LoginUser> {
+    async login(usuario: LoginUser): Promise<Token> {
         const { email, password } = usuario;
 
         const usuarioLogin = await this.userModel.findOne({ where: { email: email } });
@@ -86,10 +86,7 @@ export class UserService {
 
         const token = this.jwtService.sign({ id: usuarioLogin.id, nombre: usuarioLogin.nombre, email: usuarioLogin.email });
 
-        const user: LoginUser = {
-            // user: usuarioLogin,
-            token: token,
-        };
+        const user: Token = { token: token };
 
         return user;
     }
