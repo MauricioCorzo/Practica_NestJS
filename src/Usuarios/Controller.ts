@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, Length } from 'class-validator';
-import { JwtGuard } from './Jwt-guardian';
+import { JwtGuardian } from './Jwt-guardian';
 import { User } from './Model';
 import { UserService } from './Service';
 
@@ -23,9 +23,18 @@ export class CreateUser {
     confirmado?: boolean;
 }
 
-export interface LoginUser {
-    token: string;
+export class LoginUser {
+    @IsNotEmpty()
+    email: string;
+
+    @IsNotEmpty()
+    @Length(8)
+    password: string;
 }
+
+export type Token = {
+    token: string;
+};
 
 @ApiTags('User')
 @Controller('users')
@@ -42,24 +51,25 @@ export class UserController {
         return this.userService.allUsers();
     }
 
-    @Get(':id')
-    getUser(@Param('id') id: string): Promise<CreateUser> {
-        return this.userService.getUser(id);
-    }
-
     @Get('confirmar/:token')
     confirmar(@Param('token') token: string) {
         return this.userService.confirmar(token);
     }
 
     @Post('login')
-    login(@Body() usuario: Pick<CreateUser, 'email' | 'password'>): Promise<LoginUser> {
+    login(@Body() usuario: LoginUser): Promise<Token> {
         return this.userService.login(usuario);
     }
 
-    @UseGuards(JwtGuard)
+    @ApiBearerAuth()
+    @UseGuards(JwtGuardian)
     @Get('perfil')
     perfil(@Request() req): CreateUser {
         return req.user;
+    }
+
+    @Get(':id')
+    getUser(@Param('id') id: string): Promise<CreateUser> {
+        return this.userService.getUser(id);
     }
 }
