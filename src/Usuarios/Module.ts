@@ -5,7 +5,7 @@ import { UserController } from './Controller';
 import { User } from './Model';
 import { UserService } from './Service';
 import * as dotenv from 'dotenv';
-import { JwtStrategy } from './Jwt.stratergy';
+import { JwtStrategy } from '../JWT/Jwt.stratergy';
 
 dotenv.config({ path: '.env' });
 
