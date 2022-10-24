@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, Length } from 'class-validator';
-import { JwtGuardian } from './Jwt-guardian';
+import { JwtGuardian } from '../JWT/Jwt-guardian';
 import { User } from './Model';
 import { UserService } from './Service';
 

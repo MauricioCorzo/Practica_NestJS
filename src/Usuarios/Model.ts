@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
         },
     },
 }))
-@Table({ modelName: 'User', tableName: 'User', timestamps: false })
+@Table({ tableName: 'UserPrueba', timestamps: false })
 export class User extends Model {
     @IsUUID(4)
     @PrimaryKey

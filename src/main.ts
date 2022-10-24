@@ -6,7 +6,13 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    const config = new DocumentBuilder().setTitle('Mi API').setDescription('Descripcion de la API').setVersion('1.0').addBearerAuth().addTag('User').build();
+    const config = new DocumentBuilder()
+        .setTitle('Mi API')
+        .setDescription('Descripcion de la API')
+        .setVersion('1.0')
+        .addBearerAuth()
+        .addTag('User')
+        .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document); // Documentacion de las rutas en /api
     app.useGlobalPipes(new ValidationPipe()); // Para que valide los datos que nos envian cons npm i --save class-validator class-transform

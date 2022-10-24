@@ -84,7 +84,11 @@ export class UserService {
             throw new HttpException('Tu cuenta no ha sido confirmada aun', 403);
         }
 
-        const token = this.jwtService.sign({ id: usuarioLogin.id, nombre: usuarioLogin.nombre, email: usuarioLogin.email });
+        const token = this.jwtService.sign({
+            id: usuarioLogin.id,
+            nombre: usuarioLogin.nombre,
+            email: usuarioLogin.email,
+        });
 
         const user: Token = { token: token };
 

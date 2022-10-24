@@ -20,7 +20,7 @@ const db: SequelizeModuleOptions & SequelizeModule = {
     models: [User],
     autoLoadModels: true,
     synchronize: true,
-    sync: { force: false },
+    sync: { force: true },
     retryAttempts: 3,
 };
 
