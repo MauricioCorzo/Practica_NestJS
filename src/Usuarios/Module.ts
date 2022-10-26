@@ -18,7 +18,7 @@ dotenv.config({ path: '.env' });
         }),
     ],
     exports: [SequelizeModule],
-    providers: [UserService, JwtStrategy], // Para que implemente el JWT para traer perfil de usaurio
+    providers: [UserService, JwtStrategy], // Para que implemente el JWT para traer perfil de usaurio!!!!
     controllers: [UserController],
 })
 export class UsersModule {}
